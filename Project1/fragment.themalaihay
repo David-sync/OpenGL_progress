@@ -1,9 +1,10 @@
 #version 460 core
-layout (location = 0) out vec4 color;
+layout (location = 0) out vec4 color; // nghĩ đơn giản thì giống cái cổng cáp HDMI nối ra màn hình máy tính
 
 in vec3 fragmentColor;
+in vec3 triangle_fragmentColor;
 
 
 void main(){
-	color = vec4(fragmentColor, 0.2f);
+	color = vec4(fragmentColor, 1.0f);
 }

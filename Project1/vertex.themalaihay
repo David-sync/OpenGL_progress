@@ -1,7 +1,7 @@
 #version 460 core
 
-layout(location = 0) in vec3 aPos; // vị trí
-layout(location = 1) in vec3 vertexColor; // màu
+layout(location = 0) in vec3 aPos; // tọa độ dùng cho mọi vật thể
+layout(location = 1) in vec3 vertexColor; // màu sắc dùng cho mọi vật thể
 
 // mở hộp tủ số 5 ra
 uniform mat4 MVP;

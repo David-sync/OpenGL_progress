@@ -18,7 +18,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Tạo cửa sổ
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Project OpenGL Thu Cong Cua Toi", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(800, 600, "Gay cube here we come aaaaaaaaaa", NULL, NULL);
     if (window == NULL) {
         fprintf(stderr, "Failed to open GLFW window.\n");
         glfwTerminate();
@@ -40,6 +40,9 @@ int main() {
     glBindVertexArray(VertexArrayID);
 
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
 
     // mảng 3 vector đỉnh
     static const GLfloat g_vertex_buffer_data[] = {
@@ -120,6 +123,17 @@ int main() {
         0.982f,  0.099f,  0.879f
     };
 
+    static const GLfloat g_triangle_buffer_data[] = {
+        -2.0f, -2.0f, 2.0f, 1.0f, 0.0f, 0.0f,
+        2.0f, -2.0f, 2.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 2.0f, 2.0f, 0.0f, 0.0f, 1.0f
+    };
+
+    GLuint triangle_vertexbuffer;
+    glGenBuffers(1, &triangle_vertexbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, triangle_vertexbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_triangle_buffer_data), g_triangle_buffer_data, GL_STATIC_DRAW);
+
     GLuint vertexbuffer;
     glGenBuffers(1, &vertexbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -129,6 +143,8 @@ int main() {
     glGenBuffers(1, &colorbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
+
+
 
 
     GLuint programID = LoadShaders("vertex.themalaihay", "fragment.themalaihay");
@@ -143,7 +159,7 @@ int main() {
 
 
     glm::mat4 View = glm::lookAt(
-        glm::vec3(4, 3, 3),
+        glm::vec3(5, 3, 3),
         glm::vec3(0, 0, 0),
         glm::vec3(0, 1, 0)
     );
@@ -159,32 +175,50 @@ int main() {
 
 
 
-
-
-
-
-    // 5. Vòng lặp Game chính
     do {
+
+        GLfloat g_color_buffer_data[12 * 3 * 3];
+        for (int v = 0; v < 36; v++)
+        {
+            g_color_buffer_data[(v * 3) + 0] = (float)rand() / RAND_MAX;
+            g_color_buffer_data[(v * 3) + 1] = (float)rand() / RAND_MAX;
+            g_color_buffer_data[(v * 3) + 2] = (float)rand() / RAND_MAX;
+        }
+
+
         // Xóa màn hình
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
         // giải thích cho gpu nên đọc dữ liệu trong kho vertexbuffer như thế nào
+        // glVertexAttribPointer(index, size, type, normalized, stride, pointer)
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
         glEnableVertexAttribArray(1);
+
         glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_DYNAMIC_DRAW);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
         
-
+        glUseProgram(programID);
         // đưa mvp vào hòm thư số MatrixID hồi nãy
         glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
 
-        glUseProgram(programID);
+
 
         // vẽ (chưa hiểu cách hoạt động lắm, sao lại nhận tham số thứ 2 là số vertex)
         glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        glEnableVertexAttribArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, triangle_vertexbuffer);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0); // stride là bước nhảy 6 tại data trộn lẫn với màu rồi, 1 lần nó đọc 3 block thì offset 0 + 6
+
+        glEnableVertexAttribArray(1);
+        glBindBuffer(GL_ARRAY_BUFFER, triangle_vertexbuffer);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) (3 * sizeof(float)));
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+
         glad_glDisableVertexAttribArray(0);
 
         // Tráo đổi bộ đệm và nhận sự kiện chuột/phím
