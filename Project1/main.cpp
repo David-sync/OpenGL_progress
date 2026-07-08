@@ -3,6 +3,7 @@
 #include <iostream>
 #include <glm/glm.hpp>
 
+// thêm thư viện matrix
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "shader.h"
