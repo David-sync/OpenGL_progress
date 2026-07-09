@@ -1,10 +1,12 @@
 #version 460 core
 layout (location = 0) out vec4 color; // nghĩ đơn giản thì giống cái cổng cáp HDMI nối ra màn hình máy tính
 
-in vec3 fragmentColor;
-in vec3 triangle_fragmentColor;
+in vec2 UV; // uv đâu ra mà in nhỉ, bên vertex à 
 
+uniform sampler2D myTextureSampler;
 
 void main(){
-	color = vec4(fragmentColor, 1.0f);
+	// color = vec4(fragmentColor, 1.0f);
+	color = texture(myTextureSampler, UV); // ban đầu có .rgb, xóa hoặc sài vec4 ép kiểu sang
+
 }

@@ -1,12 +1,12 @@
 #version 460 core
 
 layout(location = 0) in vec3 aPos; // tọa độ dùng cho mọi vật thể
-layout(location = 1) in vec3 vertexColor; // màu sắc dùng cho mọi vật thể
+layout(location = 1) in vec2 vertexUV; 
+
+out vec2 UV;
 
 // mở hộp tủ số 5 ra
 uniform mat4 MVP;
-
-out vec3 fragmentColor;
 
 
 void main()
@@ -14,5 +14,5 @@ void main()
 	// từng đỉnh của tam giác tại aPos được khai báo là vec3
 	gl_Position = MVP * vec4(aPos, 1);
 
-	fragmentColor = vertexColor;
+	UV = vertexUV;
 }
