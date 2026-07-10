@@ -44,5 +44,6 @@
     <Image Include="uvtemplate.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="dio_face.DDS" />
   </ItemGroup>
 </Project>

@@ -147,6 +147,7 @@
     <None Include="vertex.themalaihay" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="dio_face.DDS" />
     <Image Include="uvtemplate.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
