@@ -8,6 +8,7 @@
 
 #include "shader.h"
 #include "loadingBMP.h"
+#include "controls/controls.hpp"
 
 int main() {
 
@@ -149,36 +150,22 @@ int main() {
     }
 
 
-    glm::mat4 Projection = glm::perspective(glm::radians(45.0f), (float)4.0f / (float)3.0f, 0.1f, 100.0f);
 
-
-    glm::mat4 View = glm::lookAt(
-        glm::vec3(2, 2, 3),
-        glm::vec3(0, 0, 0),
-        glm::vec3(0, 1, 0)
-    );
-
-    glm::mat4 Model = glm::mat4(1.0f);
-
-    glm::mat4 mvp = Projection * View * Model;
 
     // trả về 1 số nguyên, MVP kiểu giống như hỏi hòm thư đang ở đâu và được trả về hòm thư số mấy 
     GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 
 
-
-
-
+    // ẩn con trỏ chuột và khóa vào trong cửa sổ game
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetScrollCallback(window, scroll_callback);
+    double lastTime = glfwGetTime();
     do {
-
-        GLfloat g_color_buffer_data[12 * 3 * 3];
-        for (int v = 0; v < 36; v++)
-        {
-            g_color_buffer_data[(v * 3) + 0] = (float)rand() / RAND_MAX;
-            g_color_buffer_data[(v * 3) + 1] = (float)rand() / RAND_MAX;
-            g_color_buffer_data[(v * 3) + 2] = (float)rand() / RAND_MAX;
-        }
-
+        glEnable(GL_CULL_FACE);
+    
+        double currentTime = glfwGetTime();
+        float deltaTime = float(currentTime - lastTime);
+        lastTime = currentTime;
 
         // Xóa màn hình
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -200,6 +187,13 @@ int main() {
         glUniform1i(glGetUniformLocation(programID, "myTextureSample"), 0);
 
 
+        // move
+        computeMatricesFromInputs(window, deltaTime);
+        glm::mat4 ProjectionMatrix = getProjectionMatrix();
+        glm::mat4 ViewMatrix = getViewMatrix();
+        glm::mat4 ModelMatrix = glm::mat4(1.0);
+        glm::mat4 mvp = ProjectionMatrix * ViewMatrix * ModelMatrix;
+
         // đưa mvp vào hòm thư số MatrixID hồi nãy
         glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
 
@@ -216,7 +210,9 @@ int main() {
         //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) (3 * sizeof(float)));
         //glDrawArrays(GL_TRIANGLES, 0, 3);
 
-        glad_glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(0);
+        
+
 
         // Tráo đổi bộ đệm và nhận sự kiện chuột/phím
         glfwSwapBuffers(window);

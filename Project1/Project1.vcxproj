@@ -133,13 +133,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="controls\controls.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="loadingBMP.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="objloader.cpp" />
     <ClCompile Include="shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="controls\controls.hpp" />
     <ClInclude Include="loadingBMP.h" />
+    <ClInclude Include="objloader.hpp" />
     <ClInclude Include="shader.h" />
   </ItemGroup>
   <ItemGroup>
